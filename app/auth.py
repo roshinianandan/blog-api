@@ -6,8 +6,8 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from dotenv import load_dotenv
 import os
-from . import models, schemas        # ← FIXED (was ..auth)
-from .database import get_db         # ← FIXED (was .database)
+from . import models, schemas
+from .database import get_db
 
 load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -17,14 +17,12 @@ EXPIRE_MIN = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
-# ── Password helpers ──────────────────────────
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
 
 def verify_password(plain: str, hashed: str) -> bool:
     return pwd_context.verify(plain, hashed)
 
-# ── JWT helpers ───────────────────────────────
 def create_access_token(data: dict) -> str:
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(minutes=EXPIRE_MIN)
@@ -41,7 +39,6 @@ def verify_token(token: str, credentials_exception):
     except JWTError:
         raise credentials_exception
 
-# ── Get current logged-in user ────────────────
 def get_current_user(
     token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db)

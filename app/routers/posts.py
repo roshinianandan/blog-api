@@ -6,7 +6,6 @@ from ..database import get_db
 
 router = APIRouter(prefix="/posts", tags=["Posts"])
 
-# Public routes
 @router.get("/", response_model=List[schemas.PostResponse])
 def get_posts(db: Session = Depends(get_db)):
     return db.query(models.Post).all()
@@ -18,7 +17,6 @@ def get_post(id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Post not found")
     return post
 
-# Protected routes — must be logged in
 @router.post("/", status_code=201, response_model=schemas.PostResponse)
 def create_post(
     post: schemas.PostCreate,

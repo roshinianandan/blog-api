@@ -12,7 +12,7 @@ def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
     ).first()
     if exists:
         raise HTTPException(status_code=400, detail="Email already registered")
-    
+
     hashed = auth.hash_password(user.password)
     new_user = models.User(email=user.email, password=hashed)
     db.add(new_user)
