@@ -2,6 +2,19 @@ from pydantic import BaseModel, EmailStr
 from datetime import datetime
 from typing import Optional
 
+# ── User Schemas ──────────────────────────────
+class UserCreate(BaseModel):
+    email: EmailStr
+    password: str
+
+class UserResponse(BaseModel):
+    id: int
+    email: EmailStr
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
 # ── Post Schemas ──────────────────────────────
 class PostCreate(BaseModel):
     title: str
@@ -14,19 +27,8 @@ class PostResponse(BaseModel):
     content: str
     published: bool
     created_at: datetime
-
-    class Config:
-        from_attributes = True
-
-# ── User Schemas ──────────────────────────────
-class UserCreate(BaseModel):
-    email: EmailStr
-    password: str
-
-class UserResponse(BaseModel):
-    id: int
-    email: EmailStr
-    created_at: datetime
+    owner_id: int
+    owner: UserResponse       # shows who created the post
 
     class Config:
         from_attributes = True

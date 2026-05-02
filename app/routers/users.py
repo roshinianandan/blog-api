@@ -11,11 +11,23 @@ def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
         models.User.email == user.email
     ).first()
     if exists:
-        raise HTTPException(status_code=400, detail="Email already registered")
-
+        raise HTTPException(
+            status_code=400,
+            detail="Email already registered"
+        )
     hashed = auth.hash_password(user.password)
     new_user = models.User(email=user.email, password=hashed)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
     return new_user
+
+@router.get("/{id}", response_model=schemas.UserResponse)
+def get_user(id: int, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.id == id).first()
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail=f"User with id {id} not found"
+        )
+    return user
