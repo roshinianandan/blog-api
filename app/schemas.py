@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 # ── User Schemas ──────────────────────────────
 class UserCreate(BaseModel):
@@ -11,6 +11,21 @@ class UserResponse(BaseModel):
     id: int
     email: EmailStr
     created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+# ── Comment Schemas ───────────────────────────
+class CommentCreate(BaseModel):
+    content: str
+
+class CommentResponse(BaseModel):
+    id: int
+    content: str
+    created_at: datetime
+    owner_id: int
+    post_id: int
+    owner: UserResponse
 
     class Config:
         from_attributes = True
@@ -28,7 +43,8 @@ class PostResponse(BaseModel):
     published: bool
     created_at: datetime
     owner_id: int
-    owner: UserResponse       # shows who created the post
+    owner: UserResponse
+    comments: List[CommentResponse] = []
 
     class Config:
         from_attributes = True

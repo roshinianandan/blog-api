@@ -11,8 +11,8 @@ class User(Base):
     password   = Column(String, nullable=False)
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
 
-    # One user has many posts
-    posts      = relationship("Post", back_populates="owner")
+    posts      = relationship("Post", back_populates="owner",
+                              cascade="all, delete-orphan")
 
 class Post(Base):
     __tablename__ = "posts"
@@ -22,8 +22,19 @@ class Post(Base):
     content    = Column(String, nullable=False)
     published  = Column(Boolean, default=True)
     created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
-
-    # Foreign key — links post to a user
     owner_id   = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"),
                         nullable=False)
     owner      = relationship("User", back_populates="posts")
+
+class Comment(Base):
+    __tablename__ = "comments"
+
+    id         = Column(Integer, primary_key=True, index=True)
+    content    = Column(String, nullable=False)
+    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
+    post_id    = Column(Integer, ForeignKey("posts.id", ondelete="CASCADE"),
+                        nullable=False)
+    owner_id   = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"),
+                        nullable=False)
+    post       = relationship("Post", backref="comments")
+    owner      = relationship("User", backref="comments")
