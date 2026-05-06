@@ -22,3 +22,29 @@ A production-ready REST API built with **FastAPI**, **PostgreSQL**, and **JWT Au
 - ✅ Request logging middleware
 
 ## Project Structure
+
+## Docker Setup
+
+### Run with Docker Compose
+```bash
+docker-compose up --build
+```
+
+### Stop containers
+```bash
+docker-compose down
+```
+
+## CI/CD
+This project uses **GitHub Actions** for continuous integration.
+- Every push to `main` runs the full pytest suite automatically
+- Badge: ![CI](https://github.com/roshinianandan/blog-api/actions/workflows/ci.yml/badge.svg)
+
+## Deployment
+Deployed on **Render.com** — [Live API URL here]
+
+### Deploy your own
+1. Fork this repo
+2. Connect to Render.com
+3. Set environment variables
+4. Deploy!
